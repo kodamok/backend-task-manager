@@ -8,9 +8,8 @@ server.use(express.json()) // Body Parser MiddleWare that takes the http(client)
 server.use(express.urlencoded({ extended: true }));
 
 server.get("/", (req, res) => {
-  console.log("server works!");
-  console.log(req.body);
-  res.send(req.body)
+  res.status(200)
+  res.send("this works")
   res.end()
   
 });
