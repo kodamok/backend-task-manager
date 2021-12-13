@@ -3,11 +3,12 @@ const router = express.Router();
 const validateInput = require('../middlewares/validateInputs')
 
 //MIddleware to do all the below checks for the password
-const validateInputContent = (requiredValues) => (req, res, next){
+const validateInputContent = (requiredValues) => function (req, res, next){
   const getBody = req.body
 
-  requiredValues.forEach(value => getBody[value].includes("@") !== true ? 
-
+  requiredValues.forEach(value => getBody[value].includes("@") ? null : res.send("this is not a valid email addres"))
+  
+  next()
 }
 
 
