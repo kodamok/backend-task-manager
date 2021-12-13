@@ -16,7 +16,7 @@ server.get("/", (req, res) => {
 
 
 
-// MANAGEMENT OF TASKS
+/* // MANAGEMENT OF TASKS
 const tasksRouter = require("./routers/tasks_router");
 server.use("/tasks", tasksRouter);
 
@@ -37,5 +37,5 @@ server.use("/categories", categoriesRouter);
 
 server.use(require('./middlewares/errorCatcher'))
 
-
+ */
 server.use((req, res) => res.status(404).send('<h1>ERROR 404</h1>'))

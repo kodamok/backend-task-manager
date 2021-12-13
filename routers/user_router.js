@@ -7,7 +7,7 @@ const validateInputContent = (requiredValues) => function (req, res, next){
   const getBody = req.body
 
   requiredValues.forEach(value => getBody[value].includes("@") ? null : res.send("this is not a valid email addres"))
-  
+
   next()
 }
 
