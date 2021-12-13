@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const server = express();
-const PORT = process.env.PORT_NUMBER;
+const PORT = process.env.PORT;
 
 server.listen(PORT, () => console.log(`Server running in port ${PORT}`));
 server.use(express.json()) // Body Parser MiddleWare that takes the http(client) and transfer it to the express req.body(server)
@@ -16,7 +16,7 @@ server.get("/", (req, res) => {
 
 
 
-/* // MANAGEMENT OF TASKS
+// MANAGEMENT OF TASKS
 const tasksRouter = require("./routers/tasks_router");
 server.use("/tasks", tasksRouter);
 
@@ -37,5 +37,5 @@ server.use("/categories", categoriesRouter);
 
 server.use(require('./middlewares/errorCatcher'))
 
- */
+
 server.use((req, res) => res.status(404).send('<h1>ERROR 404</h1>'))
