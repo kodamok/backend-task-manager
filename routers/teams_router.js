@@ -22,7 +22,7 @@ router.post("/", (req, res, next) => {
 //GET         /teams
 router.get("/", (req, res, next) => {
   try {
-    myInnerFunctionThatFails();
+   
     res.status(201).json("/teams");
   } catch(err) {
     next(err);

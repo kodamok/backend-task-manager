@@ -1,65 +1,64 @@
 const express = require("express");
 const router = express.Router();
-const validateInput = require('../middlewares/validateInputs')
+const user = require('../models/userModel.js')
 
-//MIddleware to do all the below checks for the password
-const validateInputContent = (requiredValues) => function (req, res, next){
-  const getBody = req.body
+//GET         /users
+router.get("/", async (req, res, next) => {
+  try {
+      const allUsers = await user.read()
+    
+    res.status(200).json(allUsers);
+  } catch (error) {
+    next(error);
+  }
+});
 
-  requiredValues.forEach(value => getBody[value].includes("@") ? null : res.send("this is not a valid email addres"))
+//GET         /users/:userId
+router.get("/:userId", async (req, res, next) => {
+  try {
+    const getUser = await user.read({_id:req.params.userId})
+    res.status(200).json(getUser);
+  } catch (error) {
+    next(error);
+  }
+});
 
-  next()
-}
-
-
-
-//Here the higher function takes the req.body.password & req.body.username
-//from the post request and does the whole validation for us.
 
 //POST        /users
-router.post("/", validateInput, validateInputContent(['userName', 'password','email']),(req, res, next) => {
-  try {
-    if (req.body.password.length < 6)
-      return res.status(400).json("password must have less than 6 characters");
-    if (req.body.userName.length < 8)
-      return res.status(400).json("name must have less than 8 characters");
-    if (req.body.email.includes("@") !== true)
-      return res.status(400).json(`${req.body.email} is not a valid Email Address`)
+router.post("/", async (req, res, next) => {
+    const {username, email, password} = req.body
+  const previousUser = await user.read({username: username})
+  const previousUserName = previousUser.find(user => user.username === username)
 
-    res.json(`User ${req.body.userName} you are logged in`);
-    /* res.status(201).json("/users"); */
-  } catch (err) {
-    next(err);
-  }
-});
-//GET         /users
-router.get("/", (req, res, next) => {
   try {
-    res.status(201).json("/users");
-  } catch (err) {
+    if(previousUser.length == 0){
+    const newUser = await user.post(username, email, password);
+    return res.status(200).json(`user ${newUser.username} has been added succesfully`);
+    } else if(previousUserName.username === username){
+        return res.json(`${username} already exist`)
+    }
+
+    } catch (err) {
     next(err);
-  }
-});
-//GET         /users/:userId
-router.get("/:userId", (req, res, next) => {
-  try {
-    res.status(201).json("/users/userId");
-  } catch (err) {
-    next(err);
-  }
-});
+  }});
+
+
 //PUT         /users/:userId
-router.put("/:userId", (req, res, next) => {
+router.put("/:userId", async(req, res, next) => {
   try {
-    res.status(201).json("/users/userId");
+   
+    res.status(200).json(userUpdated)
   } catch (err) {
     next(err);
   }
 });
 //DELETE      /users/:userId
-router.delete("/:userId", (req, res, next) => {
+router.delete("/:userId", async(req, res, next) => {
+    const getUser = await user.read({_id:req.params.userId})
+const deletedUser = await user.deleteUser(req.params.userId)
   try {
-    res.status(201).json("/users/userId");
+   
+    res.status(200).json('User been deleted')
   } catch (err) {
     next(err);
   }

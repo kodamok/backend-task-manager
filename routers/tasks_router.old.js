@@ -2,10 +2,28 @@ const express = require("express");
 const router = express.Router();
 const Tasks = require("../models/tasksModel");
 
+async function dataVisualization(data, observer, pageNumber) {
+  let dataBook = [];
+  const dataCopy = [...data];
+  const userPageNumber = pageNumber - 1 || 1;
+
+  for (let i = 0; dataCopy.length !== 0; i++) {
+    const dataChunk = dataCopy.splice(0, observer);
+    dataBook.push(dataChunk);
+  }
+
+  return dataBook[userPageNumber];
+}
+
 //GET         /tasks
 router.get("/", async (req, res, next) => {
   try {
-    const products = await Tasks.find().skip(req.query.startIndex).limit(req.query.itemsPerPage) // Mongoose values.
+    const allTasks = await Tasks.read();
+    const reqPageAndItemsPerPage = await dataVisualization(
+      allTasks,
+      req.query.observer,
+      req.query.pageNumber
+    );
     res.status(200).json(reqPageAndItemsPerPage);
   } catch (err) {
     next(err);
