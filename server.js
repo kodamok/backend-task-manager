@@ -24,6 +24,9 @@ server.use((req,res, next)=>{
 })
 
 
+// NEW USER & USER MANAGEMENT
+const userRouter = require("./routers/user_router.js");
+server.use("/users", userRouter);
 
 
 
@@ -31,9 +34,6 @@ server.use((req,res, next)=>{
 const tasksRouter = require("./routers/tasks_router.old");
 server.use("/tasks", tasksRouter);
 
-// NEW USER & USER MANAGEMENT
-const userRouter = require("./routers/user_router.js");
-server.use("/users", userRouter);
 
 // TEAMS
 const teamsRouter = require("./routers/teams_router");
