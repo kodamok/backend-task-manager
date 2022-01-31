@@ -18,6 +18,12 @@ const schema = new mongoose.Schema({
         unique:false
     },
 
+    role:{
+        type: String,
+        required: true,
+        defaut: 'user'
+    },
+
     versionKey: false,
     
 })

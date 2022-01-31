@@ -1,20 +1,25 @@
 const express = require("express");
 
+const userValidators = require ('../middlewares/validateInputs')
+
 const router = express.Router();
 const userController = require("../controlers/userController");
-const { getUserByParamsOrQuery, signUp, updateUser, deleteUser, logIn } = userController;
+const { getUserByParamsOrBody, signUp, updateUser, deleteUser, logIn } = userController;
+const {token} = userValidators
+
+
 
 //GET         /users
-router.get("/", getUserByParamsOrQuery);
+router.get("/", getUserByParamsOrBody);
 
 //GET         /users/:userId
-router.get("/:userId", getUserByParamsOrQuery);
+router.get("/:userId", getUserByParamsOrBody);
 
 //POST        /signup => SignUp
 router.post("/signup", signUp);
 
 //POST        /login => Login
-router.post("/login", logIn, getUserByParamsOrQuery);
+router.post("/login", logIn, token, getUserByParamsOrBody);
 
 
 

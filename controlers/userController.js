@@ -1,25 +1,27 @@
 const user = require("../mongoose/mongooseUsers");
 const User = require("../models/userModel");
+const jwt = require("../middlewares/validateInputs")
 
+
+const {token} = jwt
 const { authenticate, read, post } = user;
 
-
 // WE CAN GET USER OBJECT BY USERID PARAMS OR ITS EMAIL QUERY
-async function getUserByParamsOrQuery(req, res, next) {
+async function getUserByParamsOrBody(req, res, next) {
   const { userId } = req.params;
-  const { email } = req.query;
+  const { email } = req.body;
 
   try {
-    const userRequest = (await read({ email: email }, { _id: userId })).user
+    const userRequest = await read({ email: email }, { _id: userId });
+    const { username, mail } = userRequest;
 
-console.log(userRequest);
-    res.status(200).json(userRequest);
+    res.status(200).json({ username: username, email: mail });
   } catch (error) {
     next(error);
   }
 }
 
-// WE CREATE A NEW USER 
+// WE CREATE A NEW USER
 async function signUp(req, res, next) {
   await User.syncIndexes(); //In case i change a property from my model indexes like unique or required it will resync the model with the DB
   const { username, email, password } = req.body;
@@ -41,29 +43,22 @@ async function signUp(req, res, next) {
 }
 
 // WE LOG IN INTO OUR ACCOUNT AS A POST DUE TO THE
-// LOGIC THAT IF W ELOG IN IS BECAUSE WE WANT TO MAKE A CHANGE
+// LOGIC THAT IF WE LOG IN IS BECAUSE WE WANT TO EDIT
 async function logIn(req, res, next) {
-  const email = req.query.email;
-  const password = req.query.password;
+  const email = req.body.email;
+  const password = req.body.password;
+  
 
   try {
     const isAuthorized = await authenticate(email, password);
-    isAuthorized
-      ? next()
-      : res.send("Password or Email are incorrect, please try again");
+    if (!isAuthorized) {
+      return res.status(401).json("Please introduce a valid email/password"); 
+    }
+    next();
   } catch (error) {
     next(error);
   }
 }
-
-
-
-
-
-
-
-
-
 
 async function updateUser(req, res, next) {
   try {
@@ -84,7 +79,7 @@ async function deleteUser(req, res, next) {
 }
 
 module.exports = {
-  getUserByParamsOrQuery,
+  getUserByParamsOrBody,
   signUp,
   updateUser,
   deleteUser,

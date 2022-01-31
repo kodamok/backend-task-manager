@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
+
+
 // FIND USER VIA OBJECT OF ANY REQUESTED PARAMETER
 // FROM THE AVAILABLE ONES( _ID, EMAIL OR USERNAME)
 // AND RETURN AND OBJECT WITH THE USER CARD AND
@@ -13,10 +15,9 @@ async function read(input) {
     // For some reason this doesnt work: retrieveUserByEmail.length === 0 ? !userExist : userExist
     exists = false;
   }
-
   return {
     user: retrieveUser,
-    email: email,
+    mail: email,
     username: username,
     exists: exists,
   };
@@ -28,7 +29,6 @@ async function authenticate(email, pass) {
   let authenticated = false;
   const retrieveUserFromDB = (await read({ email: email })).user;
   const retrievePassFromUser = retrieveUserFromDB[0].password;
-  const retrieveUserId = retrieveUserFromDB[0]._id;
   const comparedPass = bcrypt.compareSync(pass, retrievePassFromUser);
   if (comparedPass) {
     authenticated = !authenticated;

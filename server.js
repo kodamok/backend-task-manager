@@ -11,11 +11,6 @@ server.use(express.json()); // Body Parser MiddleWare that takes the http(client
 server.use(express.urlencoded({ extended: true }));
 
 require('./db/mongodb.js')
-/* server.get("/", (req, res) => {
-  res.status(200);
-  res.send("this works");
-  res.end();
-}); */
 
 //Logger 
 server.use((req,res, next)=>{
@@ -28,12 +23,9 @@ server.use((req,res, next)=>{
 const userRouter = require("./routers/user_router.js");
 server.use("/users", userRouter);
 
-
-
  // MANAGEMENT OF TASKS
 const tasksRouter = require("./routers/tasks_router.old");
 server.use("/tasks", tasksRouter);
-
 
 // TEAMS
 const teamsRouter = require("./routers/teams_router");
@@ -41,6 +33,7 @@ server.use("/teams", teamsRouter);
 
 // SORT TASKS IN CATEGORIES OR COLUMNS
 const categoriesRouter = require("./routers/categories_router");
+const { use } = require("./routers/user_router.js");
 server.use("/categories", categoriesRouter); 
 
 // ERROR HANDLER MIDDLEWARE
