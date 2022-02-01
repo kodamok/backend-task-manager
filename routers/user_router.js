@@ -1,11 +1,7 @@
-const express = require("express");
-
-const userValidators = require ('../middlewares/validateInputs')
-
-const router = express.Router();
-const userController = require("../controlers/userController");
-const { getUserByParamsOrBody, signUp, updateUser, deleteUser, logIn } = userController;
-const {token} = userValidators
+const router = require ('express').Router()
+const { getUserByParamsOrBody, signUp, updateUser, deleteUser, logIn } = require("../controlers/userController");
+const  {sendTokenToUser} = require ('../controlers/accesController')
+const { authenticate } = require('../mongoose/mongooseUsers');
 
 
 
@@ -16,10 +12,10 @@ router.get("/", getUserByParamsOrBody);
 router.get("/:userId", getUserByParamsOrBody);
 
 //POST        /signup => SignUp
-router.post("/signup", signUp);
+router.post("/signup", signUp, sendTokenToUser, getUserByParamsOrBody); // funciona
 
 //POST        /login => Login
-router.post("/login", logIn, token, getUserByParamsOrBody);
+router.post("/login", logIn, getUserByParamsOrBody);
 
 
 

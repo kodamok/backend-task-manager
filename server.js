@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const server = express();
 const model = require('./models/userModel')
-/* const db = require("./db/mongodb.js") */
+const {checkAuth} = require('./middlewares/authorization')
 const PORT = process.env.PORT;
 
 

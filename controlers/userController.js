@@ -1,9 +1,7 @@
 const user = require("../mongoose/mongooseUsers");
 const User = require("../models/userModel");
-const jwt = require("../middlewares/validateInputs")
+const jwt = require("../functions/tokenCookies");
 
-
-const {token} = jwt
 const { authenticate, read, post } = user;
 
 // WE CAN GET USER OBJECT BY USERID PARAMS OR ITS EMAIL QUERY
@@ -14,6 +12,7 @@ async function getUserByParamsOrBody(req, res, next) {
   try {
     const userRequest = await read({ email: email }, { _id: userId });
     const { username, mail } = userRequest;
+    console.log(userRequest);
 
     res.status(200).json({ username: username, email: mail });
   } catch (error) {
@@ -21,19 +20,25 @@ async function getUserByParamsOrBody(req, res, next) {
   }
 }
 
+/* let authenticated = false;
+  const retrieveUserFromDB = (await read({ email: email })).user;
+  const retrievePassFromUser = retrieveUserFromDB[0].password; */
+
 // WE CREATE A NEW USER
 async function signUp(req, res, next) {
   await User.syncIndexes(); //In case i change a property from my model indexes like unique or required it will resync the model with the DB
-  const { username, email, password } = req.body;
+  const { username, email, password, role } = req.body;
   const userExist = (await read({ email: email })).exists;
 
   try {
     if (!userExist) {
-      const newUser = await post(username, email, password);
-      console.log(newUser);
-      return res
-        .status(200)
-        .json(`user ${newUser.username} has been added succesfully`);
+      const newUser = await post(username, email, password, role);
+      res.user = {
+        username: username,
+        email: email,
+      };
+
+      next();
     } else {
       return res.status(400).json(`${username} already exist`);
     }
@@ -47,13 +52,16 @@ async function signUp(req, res, next) {
 async function logIn(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
-  
-
   try {
     const isAuthorized = await authenticate(email, password);
-    if (!isAuthorized) {
-      return res.status(401).json("Please introduce a valid email/password"); 
+    if (!isAuthorized.authenticated) {
+      return res.status(401).json("Please introduce a valid email/password");
     }
+
+    res.user = {
+      ...isAuthorized,
+    };
+
     next();
   } catch (error) {
     next(error);

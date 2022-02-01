@@ -10,17 +10,19 @@ const bcrypt = require("bcrypt");
 async function read(input) {
   let exists = true;
   const retrieveUser = await User.find(input);
-  const { username, email } = retrieveUser[0];
   if (retrieveUser.length === 0) {
     // For some reason this doesnt work: retrieveUserByEmail.length === 0 ? !userExist : userExist
-    exists = false;
-  }
+    return exists = false;
+  } else {
+    const { username, email, role } = retrieveUser[0];
   return {
     user: retrieveUser,
     mail: email,
     username: username,
+    role: role,
     exists: exists,
   };
+}
 }
 
 // FIND USER BY EMAIL, RETRIEVE ITS HASHED PASSWORD FROM DB, COMPARE IT
@@ -33,13 +35,15 @@ async function authenticate(email, pass) {
   if (comparedPass) {
     authenticated = !authenticated;
   }
-  return authenticated;
+  return {
+    ...retrieveUserFromDB,
+    authenticated};
 }
 
 
 // CREATE A USER BY MONGOOSE MODEL 
 // PASSWORD IS HASHED AND NEVERDISPLAYED IN DB
-async function post(name, email, pass) {
+async function post(name, email, pass, role) {
   const saltRounds = 10;
   const hashPass = bcrypt.hashSync(pass, saltRounds);
 
@@ -47,6 +51,7 @@ async function post(name, email, pass) {
     username: name,
     email: email,
     password: hashPass,
+    role: role
   });
 
   return await newUser.save();
