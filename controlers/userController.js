@@ -29,13 +29,15 @@ async function signUp(req, res, next) {
   await User.syncIndexes(); //In case i change a property from my model indexes like unique or required it will resync the model with the DB
   const { username, email, password, role } = req.body;
   const userExist = (await read({ email: email })).exists;
-
+  
   try {
     if (!userExist) {
       const newUser = await post(username, email, password, role);
+      
       res.user = {
         username: username,
         email: email,
+        role: role,
       };
 
       next();

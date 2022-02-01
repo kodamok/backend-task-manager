@@ -1,6 +1,6 @@
 const router = require ('express').Router()
 const { getUserByParamsOrBody, signUp, updateUser, deleteUser, logIn } = require("../controlers/userController");
-const  {sendTokenToUser} = require ('../controlers/accesController')
+const  {sendTokenToUser, checkToken} = require ('../controlers/accesController')
 const { authenticate } = require('../mongoose/mongooseUsers');
 
 
@@ -9,13 +9,14 @@ const { authenticate } = require('../mongoose/mongooseUsers');
 router.get("/", getUserByParamsOrBody);
 
 //GET         /users/:userId
-router.get("/:userId", getUserByParamsOrBody);
+router.get("/:userId", checkToken, getUserByParamsOrBody);
+
 
 //POST        /signup => SignUp
 router.post("/signup", signUp, sendTokenToUser, getUserByParamsOrBody); // funciona
 
 //POST        /login => Login
-router.post("/login", logIn, getUserByParamsOrBody);
+router.post("/login", checkToken ,logIn, getUserByParamsOrBody);
 
 
 

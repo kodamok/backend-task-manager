@@ -53,6 +53,7 @@ async function post(name, email, pass, role) {
     password: hashPass,
     role: role
   });
+  console.log(newUser);
 
   return await newUser.save();
 }
