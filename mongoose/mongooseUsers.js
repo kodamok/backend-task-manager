@@ -46,6 +46,7 @@ async function authenticate(email, pass) {
 async function post(name, email, pass, role) {
   const saltRounds = 10;
   const hashPass = bcrypt.hashSync(pass, saltRounds);
+  console.log('this is the role ' + role);
 
   const newUser = new User({
     username: name,
@@ -53,7 +54,6 @@ async function post(name, email, pass, role) {
     password: hashPass,
     role: role
   });
-  console.log(newUser);
 
   return await newUser.save();
 }

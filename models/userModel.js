@@ -1,11 +1,5 @@
 const mongoose = require("mongoose");
 
-const roleSchema = new mongoose.Schema({
-  admin: String,
-
-  user: String,
-});
-
 const schema = new mongoose.Schema({
   username: {
     type: String,
@@ -24,7 +18,7 @@ const schema = new mongoose.Schema({
     unique: false,
   },
 
-  role: roleSchema,
+  role: String,
 
   versionKey: false,
 });
