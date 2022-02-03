@@ -16,6 +16,7 @@ const createToken = (payload) => {
   return jwt.sign(payload, secret, options);
 };
 
+
 const verifyToken = (token) => {
   if (!token) {
     let error = new Error("token not provided");

@@ -1,12 +1,13 @@
 const router = require ('express').Router()
 const { getUserByParamsOrBody, signUp, updateUser, deleteUser, logIn, getAllUsers} = require("../controlers/userController");
 const  {sendTokenToUser, checkToken} = require ('../controlers/accesController')
+const {checkPermissions} = require('../middlewares/authorization')
 
 
 
 
 //GET         /users
-router.get("/",checkToken, getAllUsers);
+router.get("/",checkToken, checkPermissions("admin"), getAllUsers);
 
 //GET         /users/:userId
 router.get("/:userId", checkToken, getUserByParamsOrBody);

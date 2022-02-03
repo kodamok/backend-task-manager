@@ -6,6 +6,8 @@ const { authenticate, read, post } = user;
 
 // GET ALL USERS
 async function getAllUsers(req, res, next) {
+
+
   const allUsers = await read();
 
   res.status(200).send(allUsers);
@@ -62,6 +64,7 @@ async function logIn(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
   const { mail, username, role, id } = await read({ email: email });
+  console.log('information we need from the user: ' , role);
 
   try {
     const isAuthorized = await authenticate(email, password);
@@ -75,6 +78,7 @@ async function logIn(req, res, next) {
       role: role,
       id:id
     };
+
    
 
     next();

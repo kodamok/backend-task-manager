@@ -16,6 +16,8 @@ async function read(input) {
     return retrieveUser;
   } else {
     const { username, email, role, _id } = retrieveUser[0];
+
+    console.log();
     
     return {
       user: retrieveUser,
