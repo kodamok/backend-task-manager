@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
     unique: true,
     match: /.+\@.+\..+/,
     required: true,
+    verified: false,
   },
   password: {
     type: String,
@@ -18,7 +19,11 @@ const schema = new mongoose.Schema({
     unique: false,
   },
 
-  role: String,
+  role: {
+    type: String,
+    default: "user",
+    required: true,
+  },
 
   versionKey: false,
 });

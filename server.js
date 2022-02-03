@@ -9,6 +9,7 @@ const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`Server running in port ${PORT}`));
 server.use(express.json()); // Body Parser MiddleWare that takes the http(client) and transfer it to the express req.body(server)
 server.use(express.urlencoded({ extended: true }));
+server.use(require('cookie-parser')())
 
 require('./db/mongodb.js')
 

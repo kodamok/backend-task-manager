@@ -4,15 +4,22 @@ const jwt = require("../functions/tokenCookies");
 
 const { authenticate, read, post } = user;
 
+// GET ALL USERS
+async function getAllUsers(req, res, next) {
+  const allUsers = await read();
+
+  res.status(200).send(allUsers);
+}
+
 // WE CAN GET USER OBJECT BY USERID PARAMS OR ITS EMAIL QUERY
 async function getUserByParamsOrBody(req, res, next) {
   const { userId } = req.params;
   const { email } = req.body;
 
   try {
-    const userRequest = await read({ email: email }, { _id: userId });
+    const userRequest =
+      (await read({ email: email }, { _id: userId })) || (await read());
     const { username, mail } = userRequest;
-    console.log(userRequest);
 
     res.status(200).json({ username: username, email: mail });
   } catch (error) {
@@ -29,11 +36,11 @@ async function signUp(req, res, next) {
   await User.syncIndexes(); //In case i change a property from my model indexes like unique or required it will resync the model with the DB
   const { username, email, password, role } = req.body;
   const userExist = (await read({ email: email })).exists;
-  
+
   try {
     if (!userExist) {
       const newUser = await post(username, email, password, role);
-      
+
       res.user = {
         username: username,
         email: email,
@@ -54,15 +61,21 @@ async function signUp(req, res, next) {
 async function logIn(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
+  const { mail, username, role, id } = await read({ email: email });
+
   try {
     const isAuthorized = await authenticate(email, password);
-    if (!isAuthorized.authenticated) {
+    if (!isAuthorized) {
       return res.status(401).json("Please introduce a valid email/password");
     }
 
     res.user = {
-      ...isAuthorized,
+      username: username,
+      email: mail,
+      role: role,
+      id:id
     };
+   
 
     next();
   } catch (error) {
@@ -90,6 +103,7 @@ async function deleteUser(req, res, next) {
 
 module.exports = {
   getUserByParamsOrBody,
+  getAllUsers,
   signUp,
   updateUser,
   deleteUser,
