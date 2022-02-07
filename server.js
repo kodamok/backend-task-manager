@@ -27,6 +27,11 @@ server.use("/users", userRouter);
 
 
 
+
+//server.use('/', express.static('./frontend/')) Learned to deploy web using this line of code. 
+//take front end folder => npm run build and take the build folder inside the back end folder.
+//upload to Heroku and will work.
+
 // ERROR HANDLER MIDDLEWARE
 
  server.use(require("./middlewares/errorCatcher")); 
